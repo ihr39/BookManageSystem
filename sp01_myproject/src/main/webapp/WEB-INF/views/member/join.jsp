@@ -153,7 +153,7 @@
 				</div>
 				<div class="form-group">
 					<label >닉네임 *</label> 
-					<input type="text" class="form-control" name="nicaname" id="nicname">
+					<input type="text" class="form-control" name="nicname" id="nicname">
 					<button type="button" id="btnNicnameCheck" value="N">닉네임 중복 체크</button>
 				</div>
 				<div class="form-group">
