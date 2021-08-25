@@ -156,7 +156,7 @@ public class MemberController {
 		memberService.delete(userid);
 		model.addAttribute("msg","탈퇴완료");
 		session.invalidate();
-		return "book/index";
+		return "redirect:/book/index";
 	}
 	
 	@GetMapping("passwdUpdate")
