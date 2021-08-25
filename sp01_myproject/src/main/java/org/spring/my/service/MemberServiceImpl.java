@@ -82,8 +82,6 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public String update(Member member) {
 		// 회원정보 수정
-		String passwd=bCryptPasswordEncoder.encode(member.getPasswd());
-		member.setPasswd(passwd);
 		String msg="";
 		if(0<memberDAO.update(member)) {
 			msg="수정완료";
