@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.my.ReviewMapper">
+	<insert id="insert">
+		insert into review (reviewno,shortreview,isbn,nicname,reviewscore)
+		values (reviewno_seq.nextval,#{shortreview},#{isbn},#{nicname},#{reviewscore})
+	</insert>
+	<select id="selectList" resultType="java.util.Map">
+		select rr.*,nvl(rm.gubun,0) gubun from reviewmanage rm right join(
+		        select r.nicname,r.isbn,r.reviewscore,r.reviewno,r.shortreview,r.reviewlevel,
+				TO_CHAR(r.regdate,'YYYY-MM-dd') regdate, r.reviewlikecnt
+				from review r
+				where r.isbn like '%'||#{isbn}||'%'
+		        order by r.reviewstep) rr 
+		on(rm.num=rr.reviewno)
+		order by rr.reviewno desc
+	</select>
+	<update id="updateReviewLikeCnt">
+		update review
+		set reviewlikecnt= reviewlikecnt+1
+		where reviewno = #{reviewno}
+	</update>
+	<update id="minusReviewLikeCnt">
+		update review
+		set reviewlikecnt= reviewlikecnt-1
+		where reviewno = #{reviewno}
+	</update>
+	<delete id="delete">
+		delete from review
+		where reviewno=#{reviewno}
+	</delete>
+	<update id="update">
+		update review
+		set shortreview=#{shortreview},
+		reviewscore= #{reviewscore}
+		where nicname=#{nicname} and reviewno=#{reviewno}
+	</update>
+</mapper>

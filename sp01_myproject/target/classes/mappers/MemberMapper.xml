@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.my.MemberMapper">
+	<insert id="insert">
+		insert into member(userid,passwd,email,nicname,name,tel)
+		values(#{userid},#{passwd},#{email},#{nicname},#{name},#{tel})
+	</insert>
+	<select id="selectOne" resultType="Member">
+		select * from member
+		where userid=#{userid}
+	</select>
+	<update id="update">
+		update member
+		set passwd=#{passwd},
+		name=#{name},
+		nicname=#{nicname},
+		tel=#{tel},
+		email=#{email}
+		where userid=#{userid}
+	</update>
+	<delete id="delete">
+		delete from member 
+		where userid=#{userid}
+	</delete>
+	<update id="passwdUpdate">
+		update member
+		set passwd = #{passwd}
+		where userid=#{userid}
+	</update>
+	<select id="nicnameCheck" resultType="Member">
+		select * from member
+		where nicname = #{nicname}
+	</select>
+	<insert id="naverJoin">
+		insert into member(userid,passwd,nicname,name,simplelogin)
+		values(#{userid},'naver',#{nicname},#{name},'N')
+	</insert>
+	<insert id="kakaoJoin">
+		insert into member(userid,passwd,nicname,name,simplelogin)
+		values(#{userid},'kakao',#{nicname},#{nicname},'K')
+	</insert>
+	<insert id="inq_insert">
+		insert into inquiry(inq_num,inq_subject,inq_content,inq_file,userid)
+		values(inq_num_seq.nextval,#{inq_subject},#{inq_content},#{inq_file},#{userid})
+	</insert>
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.my.ReviewReplyMapper">
+	<insert id="insert">
+		insert into ReviewReply(content,nicname,reviewno,reviewstep,isbn,reviewlevel)
+		values (#{content},#{nicname},#{reviewno},#{reviewstep},#{isbn},#{reviewlevel})
+	</insert>
+	<update id="reviewStepUpdate">
+		update reviewreply
+		set reviewstep=reviewstep+1
+		where reviewstep>=#{reviewstep} and reviewno=#{reviewno}
+	</update>
+	<select id="selectList" resultType="java.util.Map">
+		select * from ReviewReply
+		where isbn=#{isbn}
+		order by reviewstep desc
+	</select>
+	<delete id="delete">
+		delete from reviewreply
+		where reviewno=#{reviewno} and reviewstep=#{reviewstep}
+	</delete>
+	<update id="ReviewReplyStepUpdate">
+		update reviewreply
+		set reviewstep=reviewstep-1
+		where reviewno = #{reviewno}
+		and reviewstep>#{reviewstep}
+	</update>
+	<update id="update">
+		update reviewreply
+		set content=#{content},
+		regdate = sysdate
+		where reviewno = #{reviewno} and reviewstep= #{reviewstep}
+	</update>
+	<select id="replySelectList" resultType="ReviewReply">
+		select * from reviewreply
+		where reviewno=#{reviewno}
+		order by reviewstep desc
+	</select>
+	
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.my.BookMapper">
+	<sql id="findkey">
+		<if test="findkey == 'author'">
+			where author like '%'||#{query}||'%'
+		</if>
+		<if test="findkey == 'description'">
+			where description like '%'||#{query}||'%'
+		</if>
+		<if test="findkey == 'title'">
+			where title like '%'||#{query}||'%'
+		</if>
+		<if test="findkey == 'isbn'">
+			where isbn like '%'||#{query}||'%'
+		</if>
+		<if test="findkey == 'tidis'">
+			where description like '%'||#{query}||'%' 
+			or title like '%'||#{query}||'%'
+		</if>
+	</sql>
+	<insert id="insert" statementType="CALLABLE">
+		<!-- insert into book (isbn,title,author,image,description,publisher,link)
+        values (#{isbn},#{title},#{author},#{image},#{description},#{publisher},#{link}) -->
+        call book_insert_update(#{title},
+        	#{author},
+        	#{image},
+        	#{description},
+        	#{publisher},
+        	#{link},
+        	#{isbn})
+	</insert>
+
+	<select id="selectList" resultType="java.util.Map">
+		select b.* from(select rownum rnum,b.* from book b
+		    <include refid="findkey"></include>)b
+		where b.rnum between ${startNo} and ${endNo} 
+		order by rnum
+	</select>
+	
+		
+	<select id="selectOne" resultType="java.util.Map">
+		select b.*,bm.gubun from book b left join (select *from bookmanage
+		where userid=#{userid}) bm on (b.isbn=bm.num)
+		where b.isbn=#{isbn}
+	</select>
+
+	<update id="gradeUpdate">
+		update book
+		set grade = (select avg(reviewscore) reviewscore_sum from review
+		    group by isbn
+		    having isbn=#{isbn})
+		where isbn=#{isbn}
+	</update>
+	
+	<!-- 내 정보에서 책 리스트 -->
+	<select id="bookLikeList" resultType="java.util.Map">
+		select b.*,bm.* from book b left join bookmanage bm
+		on (b.isbn=bm.num)
+		where userid=#{userid}
+	</select>
+	
+	<select id="bookReviewList" resultType="java.util.Map">
+		select distinct b.* from 
+			(select b.* from book b 
+			 	left join review r
+				on(b.isbn=r.isbn)
+			    where nicname=#{nicname}) b
+	</select>
+	
+	
+	<!-- 메인에서 별점 순 인기순으로 하기 위해 하는 것 -->
+	<!-- 별점 순  -->
+	<select id="selectListGrade" resultType="java.util.Map">
+		select * from(select b.*,rownum rnum from(select b.*
+		        from book b
+		        order by GRADE desc
+		        ) b)b
+		where b.rnum between 1 and 8
+		order by b.rnum
+	</select>
+	<!-- 좋아요 CNT 순 -->
+	<select id="selectListLikeCnt" resultType="java.util.Map">
+		select b.* from(select rownum rnum,b.* from(select count(num) booklike_cnt 
+            ,b.title,b.publisher,b.image,b.isbn
+            from bookmanage bm right join book b on(bm.num=b.isbn)
+            group by bm.num, b.isbn,b.TITLE,b.PUBLISHER,b.IMAGE
+            order by booklike_cnt desc
+		    ) b
+		order by rnum) b
+		where b.rnum between 1 and 8
+	</select>
+	
+	<!-- 총 게시물의 수 -->
+	<select id="bookListCnt" resultType="int">
+		select count(isbn) from book
+		<include refid="findkey"></include>
+	</select>
+</mapper>

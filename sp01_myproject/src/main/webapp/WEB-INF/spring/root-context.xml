@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- 데이터소스 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+		<property name="username" value="hr"/>
+		<property name="password" value="hr"/>
+	</bean>
+	
+	<!-- 마이바티스 factory객체 생성 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/> 
+		<property name="configLocation" value="classpath:/mybatisConfig.xml"/>
+		<property name="mapperLocations" value="classpath:/mappers/**/*Mapper.xml"/>
+	</bean>
+	
+	<!-- 마이바티스 세션 생성 -->
+	<!-- SqlSessionTemplate 객체 관리해준다 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<!-- 파일업로드 디렉토리 bean생성 -->	
+	<!-- String uploadDir = new String("D:/ksy/upload"); -->
+	<bean id="uploadDir" class="java.lang.String">
+		<constructor-arg value="D:\IHR_java\potofile"/>
+	</bean>
+	
+	<!-- 암호화 bean생성 -->
+	<bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+	<!-- 트랜잭션 어노데이션 자동 스캔 -->
+	<tx:annotation-driven/>
+	<!-- 트랜젝션 매니저 객체 생성 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!-- 이메일 bean생성 --> 
+	<!-- host : 메일을 전송해줄 서버 -->
+	<!-- username,password : 본인의 이메일과 패스워드 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com"/>
+		<property name="port" value="587"/>
+		<property name="username" value="codingtreeksy@gmail.com"/>
+		<property name="password" value="jth10141120!!"/>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>	 	
+	
+	</bean>
+	
+	
+	
+	
+	
+	
+</beans>
