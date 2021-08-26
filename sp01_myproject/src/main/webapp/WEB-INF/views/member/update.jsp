@@ -39,28 +39,6 @@
 			}
 		});
 		
-  		//닉네임 중복 확인
-		$('#btnNicnameCheck').click(function(){
-			var nicname=$('#nicname').val();
-			$.ajax({
-				url:'${path}/member/nicCheck/'+nicname,
-				type:'get',
-				dataType:'json',
-				success: function(data){
-					alert(data.msg);
-					if(data.recode==0){
-						$('#btnNicnameCheck').val('Y');
-					}else{
-						$('#nicname').val('');
-						$('#nicname').focus();
-					}
-				},
-				error: function(){
-					alert('실패');
-				}
-			});	
-		});
-		
 		//삭제버튼 클릭시
 		$('#btnDelete').click(function(){
 			var result=confirm('탈퇴하시겠습니까?');
@@ -124,7 +102,6 @@
 				<div class="form-group">
 					<label for="exampleInputPassword1">닉네임 *</label>
 					<input type="text" class="form-control" name="nicaname" id="nicname" value="${sessionScope.nicname }">
-					<button type="button" id="btnNicnameCheck" value="N">닉네임 중복 체크</button>
 				</div>
 				<div class="form-group">
 					<label for="exampleInputEmail1">이메일</label>
