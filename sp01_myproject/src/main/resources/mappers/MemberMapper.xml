@@ -13,9 +13,7 @@
 	</select>
 	<update id="update">
 		update member
-		set passwd=#{passwd},
-		name=#{name},
-		nicname=#{nicname},
+		set name=#{name},
 		tel=#{tel},
 		email=#{email}
 		where userid=#{userid}
