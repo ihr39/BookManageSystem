@@ -29,8 +29,6 @@
 			else if(passwd!=passwdCheck){
 				alert('비밀번호가 틀립니다');
 				$('#passwdCheck').focus();
-			}else if(nicCheck != 'Y'){
-				alert('닉네임 확인을 해주세요');
 			}else{
 				var result=confirm('정말 수정하시겠습니까?');
 				if(result){
